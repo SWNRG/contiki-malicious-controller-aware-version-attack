@@ -147,6 +147,13 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
    instance->current_dag->rank
    );
 
+
+
+
+
+// George here is the DODAG incoscintensy attack........
+
+
   if((down && !sender_closer) || (!down && sender_closer)) {
     PRINTF("RPL: Loop detected - senderrank: %d my-rank: %d sender_closer: %d\n",
            sender_rank, instance->current_dag->rank,
@@ -504,6 +511,15 @@ update_hbh_header(void)
             which states that if a packet is going down it should in
             general not go back up again. If this happens, a
             RPL_HDR_OPT_FWD_ERR should be flagged. */
+      
+      
+      
+      
+     // George check this for an attack on DODAG inconscitency
+      
+      
+      
+      
       if((UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_DOWN)) {
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_FWD_ERR;
@@ -519,6 +535,13 @@ update_hbh_header(void)
           return 0;
         }
       } else {
+       
+       
+       
+       // George DODAG inconsistency
+       
+       
+       
         /* Set the down extension flag correctly as described in Section
               11.2 of RFC6550. If the packet progresses along a DAO route,
               the down flag should be set. */

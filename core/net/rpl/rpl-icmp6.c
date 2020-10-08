@@ -37,7 +37,7 @@
  * \author Joakim Eriksson <joakime@sics.se>, Nicolas Tsiftes <nvt@sics.se>
  * Contributors: Niclas Finne <nfi@sics.se>, Joel Hoglund <joel@sics.se>,
  *               Mathieu Pouillot <m.pouillot@watteco.com>
- *               George Oikonomou <oikonomou@users.sourceforge.net> (multicast)
+ *               Georg Oikonomou <oikonomou@users.sourceforge.net> (multicast)
  */
 
 /**
@@ -505,7 +505,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   
   
   // Version number attack: Increasing dag->version
-  buffer[pos++] = ++ (dag->version); // George version number of whome? Mine or child?
+  buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
  
  
  

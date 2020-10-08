@@ -25,7 +25,7 @@
 #endif
 
 #ifndef PERIOD
-#define PERIOD 50 /* increase it to 700 avoid flooding */
+#define PERIOD 300 /* increase it to 700 avoid flooding */
 #endif
 
 #define START_INTERVAL		(15 * CLOCK_SECOND)
