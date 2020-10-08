@@ -19,13 +19,13 @@
  * along the way. Prints exist in file 
  * contiki/core/net/ipv6.c and in uip6.c
  */
-#define PRINT_ROUTE_ON 1
+#define PRINT_ROUTE_ON 0
 
 
 /* if off, BLACKHOLE all UDP messages will be intercepted. Else randomly choose y/n */
 #define GREY_SINK_HOLE_ATTACK 0
 /* How much to lower the rank of the malicious node in rpl-icmp6.c */
-#define MALICIOUS_LEVEL 1
+#define MALICIOUS_LEVEL 0
 
 
 /* 2018-10-20 George: Control the printing of 

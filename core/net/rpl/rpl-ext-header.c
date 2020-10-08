@@ -109,6 +109,10 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
       }
     }
     RPL_STAT(rpl_stats.forward_errors++);
+    
+    
+    // George in case of error, reset trickle timer (RFC 6550)
+    
     /* Trigger DAO retransmission */
     rpl_reset_dio_timer(instance);
     /* drop the packet as it is not routable */
@@ -166,9 +170,15 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
     }
     if(UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_RANK_ERR) {
       RPL_STAT(rpl_stats.loop_errors++);
+      
+      
+      // George all receiving legal nodes will reset trickle timer
+      
       PRINTF("RPL: Rank error signalled in RPL option!\n");
       /* Packet must be dropped and dio trickle timer reset, see RFC6550 - 11.2.2.2 */
       rpl_reset_dio_timer(instance);
+      
+      
       return 0;
     }
     PRINTF("RPL: Single error tolerated\n");
@@ -546,14 +556,32 @@ update_hbh_header(void)
               11.2 of RFC6550. If the packet progresses along a DAO route,
               the down flag should be set. */
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
+
+        /* George DODAG inconsistency paper 
+        "Addressing DODAG Inconsistency Attacks in RPL Networks" mentions
+A malicious node, part of an RPL network, can directly
+attack its parent by sending data packets that have the ‘O’
+and ‘R’ flags set. Since packets with the ‘O’ flag are intended
+for descendant nodes, the receiving parent detects a DODAG
+inconsistency. If the ‘R’ flag is also set, which is the case
+during the attack, the received packet is dropped and the trickle
+timer is reset */
+
+
+//UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
+//RPL_HDR_OPT_DOWN &= ~RPL_HDR_OPT_DOWN;
+//printf("George: ILLEGAL optinos set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
+
           /* No route was found, so this packet will go towards the RPL
                 root. If so, we should not set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags &= ~RPL_HDR_OPT_DOWN;
           PRINTF("RPL: Option going up\n");
+
         } else {
           /* A DAO route was found so we set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
           PRINTF("RPL: Option going down\n");
+          printf("George: LEGAL packet going down. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
         }
       }
     }

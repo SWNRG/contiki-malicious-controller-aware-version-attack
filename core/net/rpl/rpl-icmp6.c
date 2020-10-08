@@ -556,7 +556,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
  	  		PRINTF("No MALICIOUS_LEVEL set, NORMAL dag->rank\n");
  	  		fake_rank = dag->rank;
   }
-  printf("PARENT_SWITCH_THRESHOLD:%d, dag->rank:%d, fake:%d\n",
+  PRINTF("PARENT_SWITCH_THRESHOLD:%d, dag->rank:%d, fake:%d\n",
   			PARENT_SWITCH_THRESHOLD, dag->rank,fake_rank);
   PRINTF("MALICIOUS_LEVEL %d\n", MALICIOUS_LEVEL);
 
