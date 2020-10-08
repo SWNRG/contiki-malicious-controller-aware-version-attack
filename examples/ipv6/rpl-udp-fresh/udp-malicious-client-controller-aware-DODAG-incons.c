@@ -25,7 +25,7 @@
 #endif
 
 #ifndef PERIOD
-#define PERIOD 50 /* increase it to 700 avoid flooding */
+#define PERIOD 300 /* increase it to 700 avoid flooding */
 #endif
 
 #define START_INTERVAL		(15 * CLOCK_SECOND)
@@ -347,19 +347,8 @@ PROCESS_THREAD(udp_client_process, ev, data)
 		if(etimer_expired(&periodic)) {
 			etimer_reset(&periodic);
 
-			/* Implementing grayhole attack even at the attacker.
-			* This is kind of cheating, but it makes very easy for the graph
-			* algorithms to find the 'mother' of the attack, as a mother of a
-			* strongly connected graph. Else, there must be a routine to find 
-			* the common and unique ancestor of all attacked nodes. This is then
-			* the attacker.
-			*
-			* BE CAREFUL: random_rand() returns ONLY EVEN NUMBERS. Hence, %4
-			* will return either 0 or 2 (random boolean variable)
-			* 
-			* sendON = (int)random_rand()%2; 
-			* returns all zeros (0)
-			*/
+// George all the following are not used in DODAG incocnistensy attack
+// look in rpl-ext-header.c for the attack implementation (altering flags 'R', 'O')
 
 			if(intercept_on == 1){
 			  if(GREY_SINK_HOLE_ATTACK == 1){
