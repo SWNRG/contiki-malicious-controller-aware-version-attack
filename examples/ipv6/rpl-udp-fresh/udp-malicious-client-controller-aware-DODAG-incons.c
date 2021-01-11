@@ -57,6 +57,8 @@ static uint8_t sendUDP = 0;
 static uint8_t sendICMP = 0; 
 
 static int counter=0; //counting rounds.
+static int prevICMRecv = 0;
+static int prevICMPSent = 0;
 
 /* uip6.c intercepting UDP packets */
 extern uint8_t intercept_on;
@@ -346,6 +348,20 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
 		if(etimer_expired(&periodic)) {
 			etimer_reset(&periodic);
+
+/* It is fair for the attacker to declare the send/received icmp, correct? */
+		int ICMPSent = uip_stat.icmp.sent - prevICMPSent;
+		prevICMPSent = uip_stat.icmp.sent;
+		int ICMPRecv = uip_stat.icmp.recv - prevICMRecv;
+		prevICMRecv = uip_stat.icmp.recv;
+
+/*************** Choose betweek total packets and current packets *****/	
+		//printf("R:%d, TOTAL_icmp_sent:%d\n",counter,uip_stat.icmp.sent);
+		//printf("R:%d, TOTAL_icmp_recv:%d\n",counter,uip_stat.icmp.recv);
+
+		printf("R:%d, CURRENT_icmp_sent:%d\n",counter,ICMPSent);
+		printf("R:%d, CURRENT_icmp_recv:%d\n",counter,ICMPRecv);			
+/**************** Attackers ICMP printouts ***************************/
 
 // George all the following are not used in DODAG incocnistensy attack
 // look in rpl-ext-header.c for the attack implementation (altering flags 'R', 'O')
