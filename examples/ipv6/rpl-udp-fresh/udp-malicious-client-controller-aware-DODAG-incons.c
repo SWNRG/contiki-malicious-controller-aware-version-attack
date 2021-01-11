@@ -338,6 +338,7 @@ PROCESS_THREAD(udp_client_process, ev, data)
 	while(1) {
 		PROCESS_YIELD();
 
+/* participating to slim-mode as a ''normal'' node */
 		monitor_DAO();
 
 		if(ev == tcpip_event) {
@@ -347,17 +348,20 @@ PROCESS_THREAD(udp_client_process, ev, data)
 		if(etimer_expired(&periodic)) {
 			etimer_reset(&periodic);
 
-// George all the following are not used in DODAG incocnistensy attack
-// look in rpl-ext-header.c for the attack implementation (altering flags 'R', 'O')
+/* George all the following are not used in DODAG incocnistensy attack
+ * look in rpl-ext-header.c for the attack implementation 
+ * (altering flags 'R', 'O')
+ */
 
 			if(intercept_on == 1){
 			  if(GREY_SINK_HOLE_ATTACK == 1){
-			  		uint8_t randomSend = (uint8_t)random_rand()%100; //%2 returns 0 only
+			  											 //%2 returns 0 only
+			  		uint8_t randomSend = (uint8_t)random_rand()%100; 
 #if PRINT_DETAILS
 					printf("randomSend in malicious node:%d\n",randomSend);
 #endif				 	
 				 	/* decide randomly to send or not (greyhole attack) */	  
-					if(randomSend < 50 ){ //it seems more trully random like this...
+					if(randomSend < 50 ){ //it seems trully random like this...
 						ctimer_set(&backoff_timer, SEND_TIME, send_packet, NULL); 
 #if PRINT_DETAILS
 						printf("my UDP data RANDOMLY sent to sink...\n");  
@@ -387,13 +391,14 @@ PROCESS_THREAD(udp_client_process, ev, data)
 				sendICMPStats();
 			}
 
-			if (counter == 5000){ //start malicious behavior not needed to test version number
+			if (counter == 5000){ 
+			/* start malicious behavior not needed to test version number */
 				 intercept_on = 1;
-				 printf("DATA Intercept:%d, MALICIOUS_LEVEL:%d, GREY_SINK_HOLE_ATTACK %d\n", 
+				 printf("DATA Intercept:%d, MAL-LEVEL:%d, GREY_HOLE_ATTACK %d\n", 
 						intercept_on, MALICIOUS_LEVEL, GREY_SINK_HOLE_ATTACK);
-				 printf("If GREY_SINK_HOLE_ATTACK == 0, it means BLACK_SINK_HOLE_ATTACK\n");
+				 printf("If GREY_HOLE_ATTACK == 0, it means BLACK_HOLE_ATTACK\n");
 				 
-				 sprintf(buf, "DATA Intercept ON, MALICIOUS_LEVEL:%d, GREY_SINK_HOLE_ATTACK %d\n", 
+				 sprintf(buf, "DATA Intercept ON, MAL-LEVEL:%d, GREY_HOLE_ATTACK %d\n", 
 						MALICIOUS_LEVEL, GREY_SINK_HOLE_ATTACK);
 				 uip_udp_packet_sendto(client_conn, buf, strlen(buf),
 									&server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));                 		

@@ -557,20 +557,20 @@ update_hbh_header(void)
               the down flag should be set. */
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
 
-        /* George DODAG inconsistency paper 
-        "Addressing DODAG Inconsistency Attacks in RPL Networks" mentions
-A malicious node, part of an RPL network, can directly
-attack its parent by sending data packets that have the ‘O’
-and ‘R’ flags set. Since packets with the ‘O’ flag are intended
-for descendant nodes, the receiving parent detects a DODAG
-inconsistency. If the ‘R’ flag is also set, which is the case
-during the attack, the received packet is dropped and the trickle
-timer is reset */
+/* George DODAG inconsistency paper "Addressing DODAG Inconsistency 
+	Attacks in RPL Networks" mentions
+	A malicious node, part of an RPL network, can directly
+	attack its parent by sending data packets that have the ‘O’
+	and ‘R’ flags set. Since packets with the ‘O’ flag are intended
+	for descendant nodes, the receiving parent detects a DODAG
+	inconsistency. If the ‘R’ flag is also set, which is the case
+	during the attack, the received packet is dropped and the trickle
+	timer is reset */
 
 
 //UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
 //RPL_HDR_OPT_DOWN &= ~RPL_HDR_OPT_DOWN;
-//printf("George: ILLEGAL optinos set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
+//printf("George: ILLEGAL options set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
 
           /* No route was found, so this packet will go towards the RPL
                 root. If so, we should not set the down flag. */
