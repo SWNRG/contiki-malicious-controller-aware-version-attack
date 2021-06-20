@@ -1,7 +1,14 @@
 #ifndef PROJECT_CONF_H_
 #define PROJECT_CONF_H_
 
+<<<<<<< HEAD
 /********* DODAG INCONSISTENCY MALICIOUS NODE ****************/
+=======
+/* Attacker node prints a message each time the version is increased */
+#ifndef PRINT_VERSION_INCREASE 
+#define PRINT_VERSION_INCREASE 1
+#endif
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
 
 /* Print only the last part of the address (e.g. 02). Handy for debugging */
 #ifndef printShortAddr

@@ -80,6 +80,11 @@
  */  
 static int PARENT_SWITCH_THRESHOLD = 96;
 
+/* NEEDED ONLY for poisoning the rank of the attacker node, to implement
+ * rank attack ONLY.
+ */  
+//static int PARENT_SWITCH_THRESHOLD = 96;
+
 /*---------------------------------------------------------------------------*/
 #define RPL_DIO_GROUNDED                 0x80
 #define RPL_DIO_MOP_SHIFT                3
@@ -508,6 +513,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   buffer = UIP_ICMP_PAYLOAD;
   buffer[pos++] = instance->instance_id;
  
+<<<<<<< HEAD
  
  
  
@@ -517,15 +523,29 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   
   
   /* THIS IS A DODAG INCONSISTENSY ATTACK. VERSION ATTACK SHOULD BE OFF */
+=======
+
+  //buffer[pos++] = dag->version; // ORIGINAL LINE
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
   
+  /* George Implementing version attack.
+   * DON'T FORGET THAT OTHER ATTACKS (e.g., DODAG Inconsistensy should be 
+   * off (commented out) in file rpl-ext.header.c
+   */ 
   
   // Version number attack: Increasing dag->version
+<<<<<<< HEAD
   //buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
  
  
  
+=======
+  buffer[pos++] = ++ (dag->version); // QUESTION: version number of whom? Mine or child?
+#if PRINT_VERSION_INCREASE
+  printf("Version number increased: ++ (dag->version)\n");
+#endif
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
  
-  
   is_root = (dag->rank == ROOT_RANK(instance));
 
 #if RPL_LEAF_ONLY

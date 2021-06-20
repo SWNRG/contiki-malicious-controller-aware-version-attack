@@ -57,6 +57,8 @@ static uint8_t sendUDP = 0;
 static uint8_t sendICMP = 0; 
 
 static int counter=0; //counting rounds.
+static int prevICMRecv = 0;
+static int prevICMPSent = 0;
 
 /* uip6.c intercepting UDP packets */
 extern uint8_t intercept_on;
@@ -155,15 +157,12 @@ tcpip_handler(void)
 			printf("Start sending ICMP stats\n"); //sink asking for UDP sent/recv		
 				
 			sendICMP = 1;	
-				
-				
+							
 	 }else if(str[0] == 'I' && str[1] == '0'){ 
 			printf("Stop probing ICMP stats\n"); 	
 							
 			sendICMP = 0;					
-								
-								
-									
+						
 	 }else if(str[0] == 'N' && str[1] == '0'){ 
 			printf("Stop sending neighbors\n"); 	
 					
@@ -194,9 +193,15 @@ print_local_addresses(void)
   int i;
   uint8_t state;
 
+<<<<<<< HEAD:examples/ipv6/rpl-udp-fresh/udp-malicious-client-controller-aware-DODAG-incons.c
   printf("MALICIOUS Node: IMPLEMENTING DODAG INCOSNISTENCY ATTACK\n");
 
   printf("Node's IPv6 addresses: \n");
+=======
+
+  printf("MALICIOUS Node implementing VERSION ATTACK ONLY\n");
+  printf("IPv6 addresses: \n");
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745:examples/ipv6/rpl-udp-fresh/mal-ver-attack.c
   for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
     state = uip_ds6_if.addr_list[i].state;
     if(uip_ds6_if.addr_list[i].isused &&
@@ -352,8 +357,12 @@ PROCESS_THREAD(udp_client_process, ev, data)
 			//tcpip_handler();
 		}
 
+/* NOTE: THE VERSION ATTACKING NODE itself is not doing anything for the attack.
+ * all the work is done in rpl-icmp6.c in line buffer[pos++] = ++ (dag->version);
+ */
 		if(etimer_expired(&periodic)) {
 			etimer_reset(&periodic);
+<<<<<<< HEAD:examples/ipv6/rpl-udp-fresh/udp-malicious-client-controller-aware-DODAG-incons.c
 
 			counter++;	 
      		PRINTF("Counter %d\n",counter); 
@@ -407,12 +416,30 @@ PROCESS_THREAD(udp_client_process, ev, data)
 #endif
 			}
 
+=======
+			counter++;	 
+			PRINTF("Counter %d\n",counter); 
+			 
+/* It is fair for the attacker to declare the send/received icmp, correct? */
+			int ICMPSent = uip_stat.icmp.sent - prevICMPSent;
+			prevICMPSent = uip_stat.icmp.sent;
+			int ICMPRecv = uip_stat.icmp.recv - prevICMRecv;
+			prevICMRecv = uip_stat.icmp.recv;
+
+/*************** Choose betweek total packets and current packets *****/	
+			//printf("R:%d, TOTAL_icmp_sent:%d\n",counter,uip_stat.icmp.sent);
+			//printf("R:%d, TOTAL_icmp_recv:%d\n",counter,uip_stat.icmp.recv);
+
+			printf("R:%d, CURRENT_icmp_sent:%d\n",counter,ICMPSent);
+			printf("R:%d, CURRENT_icmp_recv:%d\n",counter,ICMPRecv);			
+/**************** Attackers ICMP printouts ***************************/
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745:examples/ipv6/rpl-udp-fresh/mal-ver-attack.c
 			if (sendUDP != 0){
 				sendUDPStats();   	
 			}
-
 			if (sendICMP != 0){
 				sendICMPStats();
+<<<<<<< HEAD:examples/ipv6/rpl-udp-fresh/udp-malicious-client-controller-aware-DODAG-incons.c
 			}
 
 			if (counter == 5000){ 
@@ -438,6 +465,10 @@ PROCESS_THREAD(udp_client_process, ev, data)
 
 			/****** Nothing beyond this point ******************/
 
+=======
+			}		
+/************** Nothing beyond this point ****************************/
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745:examples/ipv6/rpl-udp-fresh/mal-ver-attack.c
 		} //etimer(&periodic)
   } // while(1)
   PROCESS_END();

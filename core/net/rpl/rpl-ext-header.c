@@ -576,7 +576,19 @@ UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
 /* SETTING THE RANK ERROR 'R' FLAG. */
 UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_RANK_ERR;
 
+<<<<<<< HEAD
 printf("George: flags 'O' & 'R' set. DODAG incons attack in progress\n");
+=======
+
+/* THIS VERSION OF CONTIKI is implementing version attack in rpl-icmp6.c
+ * The following attack is therefor off, remains only for reference
+ */
+
+
+//UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
+//RPL_HDR_OPT_DOWN &= ~RPL_HDR_OPT_DOWN;
+//printf("George: ILLEGAL options set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
 
 /*************** DODAG INCONSISTENCY ATTACK AGAINST PARENT NODE *******/
 
