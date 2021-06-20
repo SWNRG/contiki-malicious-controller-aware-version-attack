@@ -74,6 +74,14 @@
   uip_ipaddr_t *dao_preffered_parent_ip;
   uip_ipaddr_t dao_prefix_own_ip;
   uint8_t dao_parent_set;
+<<<<<<< HEAD
+=======
+
+/* NEEDED ONLY for poisoning the rank of the attacker node, to implement
+ * rank attack ONLY.
+ */  
+static int PARENT_SWITCH_THRESHOLD = 96;
+>>>>>>> cc3ed74319455f0dafe1454a68d06ead4b851aad
 
 /* NEEDED ONLY for poisoning the rank of the attacker node, to implement
  * rank attack ONLY.
@@ -508,8 +516,20 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   buffer = UIP_ICMP_PAYLOAD;
   buffer[pos++] = instance->instance_id;
  
+<<<<<<< HEAD
+ 
+ 
+ 
+  
+  buffer[pos++] = dag->version; //original
+  
+  
+  
+  /* THIS IS A DODAG INCONSISTENSY ATTACK. VERSION ATTACK SHOULD BE OFF */
+=======
 
   //buffer[pos++] = dag->version; // ORIGINAL LINE
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
   
   /* George Implementing version attack.
    * DON'T FORGET THAT OTHER ATTACKS (e.g., DODAG Inconsistensy should be 
@@ -517,10 +537,17 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
    */ 
   
   // Version number attack: Increasing dag->version
+<<<<<<< HEAD
+  //buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
+ 
+ 
+ 
+=======
   buffer[pos++] = ++ (dag->version); // QUESTION: version number of whom? Mine or child?
 #if PRINT_VERSION_INCREASE
   printf("Version number increased: ++ (dag->version)\n");
 #endif
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
  
   is_root = (dag->rank == ROOT_RANK(instance));
 
@@ -539,7 +566,8 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
    * normally from nodes via the malicious to the sink.
    * Sink's rank is usually 128, PARENT_SWITCH_THRESHOLD is 96 or 160.
    * A node's rank should not be lesser than the sink, hence it should 
-   * be more than 128. Choose wisely....
+   * be more than 128. 
+   * Choose wisely....
    */
    int fake_rank; 
    switch(MALICIOUS_LEVEL){ 
@@ -1119,6 +1147,16 @@ handle_dao_retransmission(void *ptr)
 
   parent = ptr;
   if(parent == NULL || parent->dag == NULL || parent->dag->instance == NULL) {
+  
+  	 
+  	 // George no parent yet, hence dont sent anything to the controller
+  	 /* "Normal node" behavior: answering promptly to controller's requests */
+  	 PRINTF("RPL: No parent set yet\n");
+  	 dao_parent_set = 0;
+  
+  
+  
+  
     return;
   }
   instance = parent->dag->instance;
@@ -1271,6 +1309,27 @@ dao_output_target_seq(rpl_parent_t *parent, uip_ipaddr_t *prefix,
 #ifdef RPL_DEBUG_DAO_OUTPUT
   RPL_DEBUG_DAO_OUTPUT(parent);
 #endif
+
+
+
+
+	/* "Normal node behavior: Will communicate the node's parent to the controller */
+	
+
+	// George they will be external to app layer for extra info to the sink
+	dao_preffered_parent = parent;
+	dao_preffered_parent_ip = 
+			rpl_get_parent_ipaddr(dao_preffered_parent->dag->preferred_parent);
+	//dao_prefix_own_ip = prefix; //node's current own IP address
+	dao_parent_set = 1; //now the parent can be used further
+
+
+	//printf("my rpl-icmp6.c parent: ");
+	//printLongAddr(parent_ipaddr);
+	//printf("\n");
+
+
+
 
   buffer = UIP_ICMP_PAYLOAD;
   pos = 0;

