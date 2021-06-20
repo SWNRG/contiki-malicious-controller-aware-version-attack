@@ -63,11 +63,17 @@
 
 #include "net/ip/uip-debug.h"
 
-/* George they will be sent to app layer for extra info to the sink */ 
-static  rpl_parent_t *dao_preffered_parent;
-static  uip_ipaddr_t *dao_preffered_parent_ip;
-static  uip_ipaddr_t dao_prefix_own_ip;
-static int PARENT_SWITCH_THRESHOLD = 96;
+// George June 2021 externilzing the variables. compiler error in iot-lab
+#include "net/rpl/icmp6-extern.h"
+
+/* George they will be sent to app layer for extra info to the sink 
+ * June 2021 All the following, moved to icmp6-extern.h
+ * because iot-lab did not compile
+ */ 
+  rpl_parent_t *dao_preffered_parent;
+  uip_ipaddr_t *dao_preffered_parent_ip;
+  uip_ipaddr_t dao_prefix_own_ip;
+  uint8_t dao_parent_set;
 
 /* NEEDED ONLY for poisoning the rank of the attacker node, to implement
  * rank attack ONLY.

@@ -5,9 +5,7 @@
 #include "net/ipv6/uip-ds6.h"
 #include "net/ip/uip-udp-packet.h"
 
-//#include "net/rpl/rpl-conf.h" //coral
 #include "net/rpl/rpl.h"      //coral
-//#include "node-id.h"   // coral
 
 #include "sys/ctimer.h"
 #include <stdio.h>
@@ -41,7 +39,9 @@ static uip_ipaddr_t server_ipaddr;
 static uip_ipaddr_t destination_ipaddr;
 
 /* Get the preffered parent, and the current own IP of the node */
-#include "net/rpl/rpl-icmp6.c"
+/* June 2021 Was not compiling in iot-lab */
+//#include "core/net/rpl/rpl-icmp6.c" 
+#include "net/rpl/icmp6-extern.h"
 extern   rpl_parent_t *dao_preffered_parent;
 extern   uip_ipaddr_t *dao_preffered_parent_ip;
 extern   uip_ipaddr_t dao_prefix_own_ip;

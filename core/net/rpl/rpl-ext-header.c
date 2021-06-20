@@ -151,12 +151,7 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
    instance->current_dag->rank
    );
 
-
-
-
-
-// George here is the DODAG incoscintensy attack........
-
+// George DODAG incoscintensy attack is here. THIS CONTIKI IS DOING VERSION ATTACK
 
   if((down && !sender_closer) || (!down && sender_closer)) {
     PRINTF("RPL: Loop detected - senderrank: %d my-rank: %d sender_closer: %d\n",
@@ -171,14 +166,10 @@ rpl_verify_hbh_header(int uip_ext_opt_offset)
     if(UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_RANK_ERR) {
       RPL_STAT(rpl_stats.loop_errors++);
       
-      
-      // George all receiving legal nodes will reset trickle timer
-      
       PRINTF("RPL: Rank error signalled in RPL option!\n");
       /* Packet must be dropped and dio trickle timer reset, see RFC6550 - 11.2.2.2 */
       rpl_reset_dio_timer(instance);
-      
-      
+         
       return 0;
     }
     PRINTF("RPL: Single error tolerated\n");
@@ -522,14 +513,6 @@ update_hbh_header(void)
             general not go back up again. If this happens, a
             RPL_HDR_OPT_FWD_ERR should be flagged. */
       
-      
-      
-      
-     // George check this for an attack on DODAG inconscitency
-      
-      
-      
-      
       if((UIP_EXT_HDR_OPT_RPL_BUF->flags & RPL_HDR_OPT_DOWN)) {
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_FWD_ERR;
@@ -546,16 +529,14 @@ update_hbh_header(void)
         }
       } else {
        
-       
-       
-       // George DODAG inconsistency
-       
-       
-       
         /* Set the down extension flag correctly as described in Section
               11.2 of RFC6550. If the packet progresses along a DAO route,
               the down flag should be set. */
         if(uip_ds6_route_lookup(&UIP_IP_BUF->destipaddr) == NULL) {
+
+/* THIS VERSION OF CONTIKI is implementing version attack in rpl-icmp6.c
+ * The following attack is therefor off, remains only for reference
+ */
 
 /* George DODAG inconsistency paper "Addressing DODAG Inconsistency 
 	Attacks in RPL Networks" mentions
@@ -566,18 +547,7 @@ update_hbh_header(void)
 	inconsistency. If the ‘R’ flag is also set, which is the case
 	during the attack, the received packet is dropped and the trickle
 	timer is reset */
-
-
-
-/* THIS VERSION OF CONTIKI is implementing version attack in rpl-icmp6.c
- * The following attack is therefor off, remains only for reference
- */
-
-
-//UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
-//RPL_HDR_OPT_DOWN &= ~RPL_HDR_OPT_DOWN;
-//printf("George: ILLEGAL options set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
-
+	
           /* No route was found, so this packet will go towards the RPL
                 root. If so, we should not set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags &= ~RPL_HDR_OPT_DOWN;
@@ -587,7 +557,6 @@ update_hbh_header(void)
           /* A DAO route was found so we set the down flag. */
           UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
           PRINTF("RPL: Option going down\n");
-          printf("George: LEGAL packet going down. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);
         }
       }
     }
