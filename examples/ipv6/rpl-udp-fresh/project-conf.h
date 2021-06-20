@@ -1,6 +1,8 @@
 #ifndef PROJECT_CONF_H_
 #define PROJECT_CONF_H_
 
+/********* DODAG INCONSISTENCY MALICIOUS NODE ****************/
+
 /* Print only the last part of the address (e.g. 02). Handy for debugging */
 #ifndef printShortAddr
 #define printShortAddr(addr) printf(" %02x ",((uint8_t *)addr)[15])
@@ -21,12 +23,10 @@
  */
 #define PRINT_ROUTE_ON 0
 
-
 /* if off, BLACKHOLE all UDP messages will be intercepted. Else randomly choose y/n */
 #define GREY_SINK_HOLE_ATTACK 0
 /* How much to lower the rank of the malicious node in rpl-icmp6.c */
 #define MALICIOUS_LEVEL 0
-
 
 /* 2018-10-20 George: Control the printing of 
  * accumulated ICMP messages in EVERY node

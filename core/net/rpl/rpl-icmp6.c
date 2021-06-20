@@ -63,10 +63,21 @@
 
 #include "net/ip/uip-debug.h"
 
-/* George they will be sent to app layer for extra info to the sink */ 
-static  rpl_parent_t *dao_preffered_parent;
-static  uip_ipaddr_t *dao_preffered_parent_ip;
-static  uip_ipaddr_t dao_prefix_own_ip;
+// George June 2021 externilzing the variables. compiler error in iot-lab
+#include "net/rpl/icmp6-extern.h"
+
+/* George they will be sent to app layer for extra info to the sink 
+ * June 2021 All the following, moved to icmp6-extern.h
+ * because iot-lab did not compile
+ */ 
+  rpl_parent_t *dao_preffered_parent;
+  uip_ipaddr_t *dao_preffered_parent_ip;
+  uip_ipaddr_t dao_prefix_own_ip;
+  uint8_t dao_parent_set;
+
+/* NEEDED ONLY for poisoning the rank of the attacker node, to implement
+ * rank attack ONLY.
+ */  
 static int PARENT_SWITCH_THRESHOLD = 96;
 
 /*---------------------------------------------------------------------------*/
@@ -501,11 +512,15 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
  
  
   
-  //buffer[pos++] = dag->version; original
+  buffer[pos++] = dag->version; //original
+  
+  
+  
+  /* THIS IS A DODAG INCONSISTENSY ATTACK. VERSION ATTACK SHOULD BE OFF */
   
   
   // Version number attack: Increasing dag->version
-  buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
+  //buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
  
  
  
@@ -528,7 +543,8 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
    * normally from nodes via the malicious to the sink.
    * Sink's rank is usually 128, PARENT_SWITCH_THRESHOLD is 96 or 160.
    * A node's rank should not be lesser than the sink, hence it should 
-   * be more than 128. Choose wisely....
+   * be more than 128. 
+   * Choose wisely....
    */
    int fake_rank; 
    switch(MALICIOUS_LEVEL){ 
@@ -1108,6 +1124,16 @@ handle_dao_retransmission(void *ptr)
 
   parent = ptr;
   if(parent == NULL || parent->dag == NULL || parent->dag->instance == NULL) {
+  
+  	 
+  	 // George no parent yet, hence dont sent anything to the controller
+  	 /* "Normal node" behavior: answering promptly to controller's requests */
+  	 PRINTF("RPL: No parent set yet\n");
+  	 dao_parent_set = 0;
+  
+  
+  
+  
     return;
   }
   instance = parent->dag->instance;
@@ -1260,6 +1286,27 @@ dao_output_target_seq(rpl_parent_t *parent, uip_ipaddr_t *prefix,
 #ifdef RPL_DEBUG_DAO_OUTPUT
   RPL_DEBUG_DAO_OUTPUT(parent);
 #endif
+
+
+
+
+	/* "Normal node behavior: Will communicate the node's parent to the controller */
+	
+
+	// George they will be external to app layer for extra info to the sink
+	dao_preffered_parent = parent;
+	dao_preffered_parent_ip = 
+			rpl_get_parent_ipaddr(dao_preffered_parent->dag->preferred_parent);
+	//dao_prefix_own_ip = prefix; //node's current own IP address
+	dao_parent_set = 1; //now the parent can be used further
+
+
+	//printf("my rpl-icmp6.c parent: ");
+	//printLongAddr(parent_ipaddr);
+	//printf("\n");
+
+
+
 
   buffer = UIP_ICMP_PAYLOAD;
   pos = 0;
