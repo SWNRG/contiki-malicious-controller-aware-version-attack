@@ -568,6 +568,12 @@ update_hbh_header(void)
 	timer is reset */
 
 
+
+/* THIS VERSION OF CONTIKI is implementing version attack in rpl-icmp6.c
+ * The following attack is therefor off, remains only for reference
+ */
+
+
 //UIP_EXT_HDR_OPT_RPL_BUF->flags |= RPL_HDR_OPT_DOWN;
 //RPL_HDR_OPT_DOWN &= ~RPL_HDR_OPT_DOWN;
 //printf("George: ILLEGAL options set. UIP_EXT_HDR_OPT_RPL_BUF:%u,RPL_HDR_OPT_DOWN:%u\n",UIP_EXT_HDR_OPT_RPL_BUF,RPL_HDR_OPT_DOWN);

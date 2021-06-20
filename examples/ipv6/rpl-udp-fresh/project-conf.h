@@ -1,6 +1,11 @@
 #ifndef PROJECT_CONF_H_
 #define PROJECT_CONF_H_
 
+/* Attacker node prints a message each time the version is increased */
+#ifndef PRINT_VERSION_INCREASE 
+#define PRINT_VERSION_INCREASE 1
+#endif
+
 /* Print only the last part of the address (e.g. 02). Handy for debugging */
 #ifndef printShortAddr
 #define printShortAddr(addr) printf(" %02x ",((uint8_t *)addr)[15])
