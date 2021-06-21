@@ -74,14 +74,11 @@
   uip_ipaddr_t *dao_preffered_parent_ip;
   uip_ipaddr_t dao_prefix_own_ip;
   uint8_t dao_parent_set;
-<<<<<<< HEAD
-=======
 
 /* NEEDED ONLY for poisoning the rank of the attacker node, to implement
  * rank attack ONLY.
  */  
 static int PARENT_SWITCH_THRESHOLD = 96;
->>>>>>> cc3ed74319455f0dafe1454a68d06ead4b851aad
 
 /* NEEDED ONLY for poisoning the rank of the attacker node, to implement
  * rank attack ONLY.
@@ -515,39 +512,20 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
 
   buffer = UIP_ICMP_PAYLOAD;
   buffer[pos++] = instance->instance_id;
- 
-<<<<<<< HEAD
- 
- 
- 
-  
-  buffer[pos++] = dag->version; //original
-  
-  
-  
-  /* THIS IS A DODAG INCONSISTENSY ATTACK. VERSION ATTACK SHOULD BE OFF */
-=======
 
-  //buffer[pos++] = dag->version; // ORIGINAL LINE
->>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
-  
-  /* George Implementing version attack.
-   * DON'T FORGET THAT OTHER ATTACKS (e.g., DODAG Inconsistensy should be 
-   * off (commented out) in file rpl-ext.header.c
-   */ 
-  
+/* George ****************** VERSION ATTACK ******************************/  
+/* DON'T FORGET THAT OTHER ATTACKS (e.g., DODAG Inconsistensy should be 
+* off (commented out) in file rpl-ext.header.c
+*/ 
+ 
+   //buffer[pos++] = dag->version; // ORIGINAL LINE
+   
   // Version number attack: Increasing dag->version
-<<<<<<< HEAD
-  //buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
- 
- 
- 
-=======
-  buffer[pos++] = ++ (dag->version); // QUESTION: version number of whom? Mine or child?
+  buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
+
 #if PRINT_VERSION_INCREASE
   printf("Version number increased: ++ (dag->version)\n");
 #endif
->>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745
  
   is_root = (dag->rank == ROOT_RANK(instance));
 

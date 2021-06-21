@@ -18,9 +18,9 @@
 #define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 
 //#define DEBUG DEBUG_FULL
-//#if DEBUG
+#if DEBUG
 #include "net/ip/uip-debug.h"
-//#endif
+#endif
 
 #ifndef PERIOD
 #define PERIOD 500 /* increase it to 700 avoid flooding */
@@ -62,9 +62,6 @@ static int prevICMPSent = 0;
 
 /* uip6.c intercepting UDP packets */
 extern uint8_t intercept_on;
-
-static uint8_t prevICMRecv = 0;
-static uint8_t prevICMPSent = 0;
 
 /*-----------------------------------------------------------------------*/
 PROCESS(udp_client_process, "UDP client process");
@@ -193,15 +190,9 @@ print_local_addresses(void)
   int i;
   uint8_t state;
 
-<<<<<<< HEAD:examples/ipv6/rpl-udp-fresh/udp-malicious-client-controller-aware-DODAG-incons.c
-  printf("MALICIOUS Node: IMPLEMENTING DODAG INCOSNISTENCY ATTACK\n");
-
-  printf("Node's IPv6 addresses: \n");
-=======
 
   printf("MALICIOUS Node implementing VERSION ATTACK ONLY\n");
   printf("IPv6 addresses: \n");
->>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745:examples/ipv6/rpl-udp-fresh/mal-ver-attack.c
   for(i = 0; i < UIP_DS6_ADDR_NB; i++) {
     state = uip_ds6_if.addr_list[i].state;
     if(uip_ds6_if.addr_list[i].isused &&
@@ -309,7 +300,7 @@ PROCESS_THREAD(udp_client_process, ev, data)
 	PROCESS_PAUSE();
 
 	set_global_address();
-  
+
 	/* The data sink runs with a 100% duty cycle in order to ensure high 
 	  packet reception rates. */
 	NETSTACK_MAC.off(1);
@@ -341,16 +332,14 @@ PROCESS_THREAD(udp_client_process, ev, data)
 		UIP_HTONS(client_conn->lport), UIP_HTONS(client_conn->rport));
 
 
-/* printing details for intercepted messages. 
- * DOES NOT MAKE SENSE IN DODAG inconsinstency 
- */
-#define PRINT_DETAILS 0
+/* printing details for intercepted messages */
+#define PRINT_DETAILS 1
 
 	etimer_set(&periodic, SEND_INTERVAL);
 	while(1) {
 		PROCESS_YIELD();
 
-/* participating to slim-mode as a ''normal-legitimate'' node */
+/* participating to slim-mode as a ''normal'' node */
 		monitor_DAO();
 
 		if(ev == tcpip_event) {
@@ -362,61 +351,6 @@ PROCESS_THREAD(udp_client_process, ev, data)
  */
 		if(etimer_expired(&periodic)) {
 			etimer_reset(&periodic);
-<<<<<<< HEAD:examples/ipv6/rpl-udp-fresh/udp-malicious-client-controller-aware-DODAG-incons.c
-
-			counter++;	 
-     		PRINTF("Counter %d\n",counter); 
-			 
-/* It is fair for the attacker to declare the send/received icmp, correct? */
-		int ICMPSent = uip_stat.icmp.sent - prevICMPSent;
-		prevICMPSent = uip_stat.icmp.sent;
-		int ICMPRecv = uip_stat.icmp.recv - prevICMRecv;
-		prevICMRecv = uip_stat.icmp.recv;
-
-/*************** Choose betweek total packets and current packets *****/	
-		//printf("R:%d, TOTAL_icmp_sent:%d\n",counter,uip_stat.icmp.sent);
-		//printf("R:%d, TOTAL_icmp_recv:%d\n",counter,uip_stat.icmp.recv);
-
-		printf("R:%d, CURRENT_icmp_sent:%d\n",counter,ICMPSent);
-		printf("R:%d, CURRENT_icmp_recv:%d\n",counter,ICMPRecv);			
-/**************** Attackers ICMP printouts ***************************/
-
-
-/* George all the following are NOT used in DODAG incocnistensy attack
- * look in rpl-ext-header.c for the attack implementation 
- * (altering flags 'R', 'O')
- */
-			if(intercept_on == 1){
-			  if(GREY_SINK_HOLE_ATTACK == 1){
-			  											 //%2 returns 0 only
-			  		uint8_t randomSend = (uint8_t)random_rand()%100; 
-#if PRINT_DETAILS
-					printf("randomSend in malicious node:%d\n",randomSend);
-#endif				 	
-				 	/* decide randomly to send or not (greyhole attack) */	  
-					if(randomSend < 50 ){ //it seems trully random like this...
-						ctimer_set(&backoff_timer, SEND_TIME, send_packet, NULL); 
-#if PRINT_DETAILS
-						printf("my UDP data RANDOMLY sent to sink...\n");  
-#endif
-					}else{ 
-#if PRINT_DETAILS
-						printf("my UDP data NOT sent\n");
-#endif
-					}
-			 	}else{ /* intercept == 1 && GREY_SINK_HOLE_ATTACK == 0 */
-#if PRINT_DETAILS
-			 		printf("Blackhole attack ON, My msg dropped...\n");
-#endif
-			 	}			 		
-			}else{ /* intercept == 0, regular operation */
-						ctimer_set(&backoff_timer, SEND_TIME, send_packet, NULL); 
-#if PRINT_DETAILS
-						printf("my UDP data regularly sent to sink...\n");  
-#endif
-			}
-
-=======
 			counter++;	 
 			PRINTF("Counter %d\n",counter); 
 			 
@@ -433,42 +367,13 @@ PROCESS_THREAD(udp_client_process, ev, data)
 			printf("R:%d, CURRENT_icmp_sent:%d\n",counter,ICMPSent);
 			printf("R:%d, CURRENT_icmp_recv:%d\n",counter,ICMPRecv);			
 /**************** Attackers ICMP printouts ***************************/
->>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745:examples/ipv6/rpl-udp-fresh/mal-ver-attack.c
 			if (sendUDP != 0){
 				sendUDPStats();   	
 			}
 			if (sendICMP != 0){
 				sendICMPStats();
-<<<<<<< HEAD:examples/ipv6/rpl-udp-fresh/udp-malicious-client-controller-aware-DODAG-incons.c
-			}
-
-			if (counter == 5000){ 
-			/* start malicious behavior not needed to test version number */
-				 intercept_on = 0; // NOT USED IN DODAG INCONSISTENCY
-				 printf("DATA Intercept:%d, MAL-LEVEL:%d, GREY_HOLE_ATTACK %d\n", 
-						intercept_on, MALICIOUS_LEVEL, GREY_SINK_HOLE_ATTACK);
-				 printf("If GREY_HOLE_ATTACK == 0, it means BLACK_HOLE_ATTACK\n");
-				 
-				 sprintf(buf, "DATA Intercept ON, MAL-LEVEL:%d, GREY_HOLE_ATTACK %d\n", 
-						MALICIOUS_LEVEL, GREY_SINK_HOLE_ATTACK);
-				 uip_udp_packet_sendto(client_conn, buf, strlen(buf),
-									&server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));                 		
-			} 
-
-			if (counter == 5000){ // end malicious behavior
-				 intercept_on = 0;
-				 printf("DATA Intercept:%d........................\n",intercept_on);
-				 sprintf(buf, "DATA Intercept END........................\n");
-				 uip_udp_packet_sendto(client_conn, buf, strlen(buf),
-									&server_ipaddr, UIP_HTONS(UDP_SERVER_PORT));
-			}
-
-			/****** Nothing beyond this point ******************/
-
-=======
 			}		
 /************** Nothing beyond this point ****************************/
->>>>>>> ab7e0b6e1747b5a056d6933e155635e4d2d8e745:examples/ipv6/rpl-udp-fresh/mal-ver-attack.c
 		} //etimer(&periodic)
   } // while(1)
   PROCESS_END();
