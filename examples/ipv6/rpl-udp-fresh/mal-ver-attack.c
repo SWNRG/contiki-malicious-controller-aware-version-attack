@@ -18,9 +18,7 @@
 #define UIP_IP_BUF   ((struct uip_ip_hdr *)&uip_buf[UIP_LLH_LEN])
 
 //#define DEBUG DEBUG_FULL
-#if DEBUG
 #include "net/ip/uip-debug.h"
-#endif
 
 #ifndef PERIOD
 #define PERIOD 500 /* increase it to 700 avoid flooding */
